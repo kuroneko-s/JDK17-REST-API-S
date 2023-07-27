@@ -1,4 +1,4 @@
-package com.example.restapi;
+package com.example.concurrency;
 
 import jdk.jfr.Configuration;
 import jdk.jfr.Recording;
