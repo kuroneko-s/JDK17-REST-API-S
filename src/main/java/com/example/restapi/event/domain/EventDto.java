@@ -1,35 +1,47 @@
 package com.example.restapi.event.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Setter
-@Getter
+@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@EqualsAndHashCode(of = "id")
-@Entity
-public class Event {
-    @Id
-    @GeneratedValue
-    private Integer id;
-
+public class EventDto {
+    @NotEmpty
     private String name;
-    private String description;
-    private LocalDateTime beginEnrollmentDateTime;
-    private LocalDateTime closeEnrollmentDateTime;
-    private LocalDateTime beginEventDateTime;
-    private LocalDateTime endEventDateTime;
-    private String location; // (optional) 이게 없으면 온라인 모임
-    private int basePrice; // (optional)
-    private int maxPrice; // (optional)
-    private int limitOfEnrollment;
-    private boolean offline = false;
-    private boolean free = false;
 
-    @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus = EventStatus.DRAFT;
+    @NotEmpty
+    private String description;
+
+    @NotNull
+    private LocalDateTime beginEnrollmentDateTime;
+
+    @NotNull
+    private LocalDateTime closeEnrollmentDateTime;
+
+    @NotNull
+    private LocalDateTime beginEventDateTime;
+
+    @NotNull
+    private LocalDateTime endEventDateTime;
+
+    @NotEmpty
+    private String location; // (optional) 이게 없으면 온라인 모임
+
+    @Min(0)
+    private int basePrice; // (optional)
+
+    @Min(0)
+    private int maxPrice; // (optional)
+
+    @Min(0)
+    private int limitOfEnrollment;
 }
