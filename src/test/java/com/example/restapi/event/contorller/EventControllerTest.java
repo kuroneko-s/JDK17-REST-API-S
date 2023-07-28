@@ -61,7 +61,7 @@ class EventControllerTest {
     @Test
     @DisplayName("Create Event 테스트")
     void createEvent() throws Exception {
-        Event event = Event.builder()
+        EventDto event = EventDto.builder()
                 .name("event_1")
                 .description("event desc")
                 .beginEnrollmentDateTime(LocalDateTime.of(2023, 7, 27, 18, 0, 0))
@@ -71,7 +71,6 @@ class EventControllerTest {
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
-                .free(true)
                 .location("평택")
                 .build();
 
@@ -85,7 +84,8 @@ class EventControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.is(true)))
+                .andExpect(jsonPath("free").value(false))
+                .andExpect(jsonPath("offline").value(true))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
         ;
     }
