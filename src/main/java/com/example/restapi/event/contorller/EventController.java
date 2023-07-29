@@ -10,7 +10,9 @@ import jakarta.validation.Validation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -62,9 +64,14 @@ public class EventController {
 
         Event newEvent = this.eventRepository.save(event);
 
-        URI uri = linkTo(EventController.class)
-                .slash(newEvent.getId())
-                .toUri();
+        WebMvcLinkBuilder selfLink = linkTo(EventController.class)
+                .slash(newEvent.getId());
+
+        URI uri = selfLink.toUri();
+
+        newEvent.add(linkTo(EventController.class).withRel("query-events"));
+        newEvent.add(selfLink.withSelfRel());
+        newEvent.add(selfLink.withRel("update-event"));
 
         return ResponseEntity.created(uri).body(newEvent);
     }

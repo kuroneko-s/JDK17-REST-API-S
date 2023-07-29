@@ -1,18 +1,28 @@
 package com.example.restapi.event.domain;
 
+import com.example.restapi.event.contorller.EventController;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 @Setter
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @EqualsAndHashCode(of = "id")
 @Entity
-public class Event {
+public class Event extends RepresentationModel<Event> {
+    /*
+    Serializer <-> Deserializer 동작 시 Object를 풀어서 진행해줌.
+    @JsonUnwrapped
+    private Event _event;
+    */
+
     @Id
     @GeneratedValue
     private Integer id;

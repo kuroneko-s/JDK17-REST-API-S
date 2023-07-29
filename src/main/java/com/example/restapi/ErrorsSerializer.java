@@ -3,6 +3,7 @@ package com.example.restapi;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.BeanSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.validation.Errors;
