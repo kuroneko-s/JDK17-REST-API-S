@@ -41,7 +41,7 @@ public class ConcurrencySupport {
     @SneakyThrows
     static String persistence(int persistence, String serviceA, String serviceB) {
         Thread.sleep(PERSISTENCE_LATENCY);
-        log.info("[{}] [{}] Persistence-{} - Executed", serviceA, serviceB, persistence);
+        log.info("{} {} Persistence-{} - Executed", serviceA, serviceB, persistence);
         return "";
     }
 

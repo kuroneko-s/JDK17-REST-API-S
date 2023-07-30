@@ -21,17 +21,14 @@ class EventTest {
 
     @Test
     @DisplayName("free 바인딩 테스트")
-    @Parameters({
-            "0, 0, true",
-    })
-    public void free_test1(int basePrice, int maxPrice, boolean result) {
+    public void free_test1() {
         Event event = Event.builder()
-                .basePrice(basePrice)
-                .maxPrice(maxPrice)
+                .basePrice(0)
+                .maxPrice(0)
                 .build();
 
         event.update();
 
-        assertEquals(event.isFree(), result);
+        assertEquals(event.isFree(), true);
     }
 }

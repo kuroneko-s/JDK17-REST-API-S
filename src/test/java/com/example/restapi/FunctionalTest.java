@@ -319,12 +319,6 @@ class Student {
         return math;
     }
 
-    @Test
-    public void test5() {
-        Thread thread = new Thread();
-        thread.start();
-    }
-
 }
 
 @FunctionalInterface

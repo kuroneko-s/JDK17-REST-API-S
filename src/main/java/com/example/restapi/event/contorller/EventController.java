@@ -1,6 +1,7 @@
 package com.example.restapi.event.contorller;
 
 
+import com.example.restapi.App;
 import com.example.restapi.event.domain.Event;
 import com.example.restapi.event.domain.EventDto;
 import com.example.restapi.event.repository.EventRepository;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.LinkRelation;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
@@ -72,6 +75,8 @@ public class EventController {
         newEvent.add(linkTo(EventController.class).withRel("query-events"));
         newEvent.add(selfLink.withSelfRel());
         newEvent.add(selfLink.withRel("update-event"));
+        newEvent.add(linkTo(App.class).slash("docs").slash("index.html#resources-events-create").withRel("profile"));
+
 
         return ResponseEntity.created(uri).body(newEvent);
     }

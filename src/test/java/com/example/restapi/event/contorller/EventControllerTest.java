@@ -23,9 +23,13 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,13 +52,6 @@ class EventControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Test
-    void test() throws Exception {
-        mockMvc.perform(get("/event"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
 
     @Test
     @DisplayName("Create Event 테스트")
@@ -88,7 +85,38 @@ class EventControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.query-events").exists())
                 .andExpect(jsonPath("_links.update-event").exists())
-                .andDo(document("create-event"))
+                .andExpect(jsonPath("_links.profile").exists())
+                .andDo(document("create-event",
+                        links(
+                                linkWithRel("self").description("self link"),
+                                linkWithRel("query-events").description("query-events link"),
+                                linkWithRel("update-event").description("update-event link"),
+                                linkWithRel("profile").description("self profile link")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("Header accepty"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Header contenttype")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("name description"),
+                                fieldWithPath("description").description("description description"),
+                                fieldWithPath("beginEnrollmentDateTime").description("beginEnrollmentDateTime description"),
+                                fieldWithPath("closeEnrollmentDateTime").description("closeEnrollmentDateTime description"),
+                                fieldWithPath("beginEventDateTime").description("beginEventDateTime description"),
+                                fieldWithPath("endEventDateTime").description("endEventDateTime description"),
+                                fieldWithPath("location").description("location description"),
+                                fieldWithPath("basePrice").description("basePrice description"),
+                                fieldWithPath("maxPrice").description("maxPrice description"),
+                                fieldWithPath("limitOfEnrollment").description("limitOfEnrollment description")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("Header name - locaion"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Header name contenttype")
+                        ),
+                        relaxedResponseFields( // 일부분만 문서화 (prefix relaxted 붙이기)
+                                fieldWithPath("id").description("고유 번호")
+                        )
+                ))
         ;
     }
 

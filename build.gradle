@@ -7,15 +7,13 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-
-java {
-    sourceCompatibility = '17'
-}
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    asciidoctorExt
 }
 
 repositories {
@@ -24,16 +22,43 @@ repositories {
 
 ext {
     set('snippetsDir', file("build/generated-snippets"))
+    // snippetsDir = file('build/generated-snippets') // 생성된 스니펫의 출력 위치를 정의하도록 속성을 구성합니다.
+}
+
+asciidoctor { // ascii 작업 구성.
+    inputs.dir snippetsDir // 스니펫 디렉터리를 입력으로 구성합니다.
+    configurations 'asciidoctorExt' // 확장에 대한 구성 사용을 구성합니다
+    dependsOn test // 문서가 생성되기 전에 테스트가 실행되도록 작업이 테스트 작업에 종속되도록 합니다.
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from ("build/docs/asciidoc") {
+        into "src/main/resources/static/docs"
+    }
+}
+
+asciidoctor.doFirst { // 가장 처음 동작
+    delete file("src/main/resources/static/docs") // 파일 삭제
+}
+
+task copyDocs { // 파일 복사
+    copy {
+        from "build/docs/asciidoc"
+        into "src/main/resources/static/docs"
+    }
 }
 
 dependencies {
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.2'
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.projectlombok:lombok'
-    // implementation 'org.slf4j:slf4j-log4j12'
+//    implementation 'org.slf4j:slf4j-log4j12'
     implementation 'org.postgresql:postgresql'
     implementation 'org.modelmapper.extensions:modelmapper-spring:3.1.1'
 
@@ -43,6 +68,8 @@ dependencies {
 
     annotationProcessor 'org.projectlombok:lombok'
 
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -50,7 +77,7 @@ dependencies {
 }
 
 tasks.named('test') {
-    outputs.dir snippetsDir
+    outputs.dir snippetsDir // test스니펫 디렉터리를 출력으로 추가하도록 작업을 구성합니다.
     useJUnitPlatform()
 }
 
