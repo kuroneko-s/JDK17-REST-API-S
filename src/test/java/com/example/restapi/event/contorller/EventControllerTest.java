@@ -1,27 +1,16 @@
 package com.example.restapi.event.contorller;
 
-import com.example.restapi.RestDocsConfigure;
 import com.example.restapi.event.domain.Event;
 import com.example.restapi.event.domain.EventDto;
 import com.example.restapi.event.domain.EventStatus;
 import com.example.restapi.event.repository.EventRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Example;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -38,25 +27,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-/*@WebMvcTest(
-        controllers = EventController.class,
-        excludeAutoConfiguration = SecurityAutoConfiguration.class,
-        excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
-        }
-)*/
-@AutoConfigureRestDocs
-@Import(RestDocsConfigure.class)
-@ActiveProfiles("test")
-class EventControllerTest {
+class EventControllerTest extends AbstractControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private EventRepository eventRepository;
@@ -229,6 +202,7 @@ class EventControllerTest {
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
+                .location("평택")
                 .build();
 
         eventRepository.save(event);
@@ -270,9 +244,6 @@ class EventControllerTest {
         ;
     }
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @Test
     @DisplayName("이벤트 수정")
     public void updateEvent() throws Exception {
@@ -292,6 +263,7 @@ class EventControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document("event-update"))
         ;
     }
 

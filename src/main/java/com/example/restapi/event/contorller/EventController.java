@@ -91,7 +91,13 @@ public class EventController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateEvent(@RequestBody EventDto eventDto, Errors errors, @PathVariable Integer id) {
+    public ResponseEntity updateEvent(@PathVariable Integer id, @RequestBody @Valid EventDto eventDto, Errors errors) {
+        Optional<Event> optionalEvent = this.eventRepository.findById(id);
+
+        if (optionalEvent.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
         log.info("{}", errors);
 
         EntityModel<Errors> errorsEntityModel = EntityModel.of(errors,
@@ -100,7 +106,7 @@ public class EventController {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errorsEntityModel);
         }
-        // BeanPropertyBindingResult
+        // BeanPropertyBindingResult - Errors 타입
         eventValidator.validate(eventDto, errors);
         log.info("{}", errors);
 
@@ -108,23 +114,17 @@ public class EventController {
             return ResponseEntity.badRequest().body(EntityModel.of(errorsEntityModel));
         }
 
-        Optional<Event> optionalEvent = this.eventRepository.findById(id);
-
-        if(optionalEvent.isEmpty()) {
-            // throw를 내고 exception hanlder controller한테 위임시키는게 나은듯
-            Map map = new HashMap();
-            map.put("Error-Message", "can not found event id");
-            return ResponseEntity.badRequest()
-                    .body(
-                            EntityModel.of(map, linkTo(methodOn(IndexController.class).index()).withRel("index"))
-                    );
-        }
 
         Event event = optionalEvent.get();
         modelMapper.map(eventDto, event);
-        this.eventRepository.save(event);
+        Event newEvent = this.eventRepository.save(event);
 
-        return ResponseEntity.ok().body(event);
+        newEvent.add(linkTo(EventController.class).withRel("query-events"));
+        newEvent.add(linkTo(EventController.class).slash(newEvent.getId()).withSelfRel());
+        newEvent.add(linkTo(EventController.class).slash(newEvent.getId()).withRel("get-event"));
+        newEvent.add(linkTo(App.class).slash("docs").slash("index.html#resources-events-update").withRel("profile"));
+
+        return ResponseEntity.ok().body(newEvent);
     }
 
     @PostMapping
