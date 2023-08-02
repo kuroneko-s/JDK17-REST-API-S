@@ -124,6 +124,8 @@ operation::create-event[snippets='request-fields,curl-request,http-response,link
 
 operation::get-event[snippets='request-fields,curl-request,http-response,links']
 
+operation::get-event-error[snippets='request-fields,curl-request,http-response,links']
+
 [[resources-events-update]]
 === 이벤트 수정
 

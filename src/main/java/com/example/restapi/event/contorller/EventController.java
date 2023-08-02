@@ -2,6 +2,7 @@ package com.example.restapi.event.contorller;
 
 
 import com.example.restapi.App;
+import com.example.restapi.event.domain.ErrorResource;
 import com.example.restapi.event.domain.Event;
 import com.example.restapi.event.domain.EventDto;
 import com.example.restapi.event.repository.EventRepository;
@@ -11,15 +12,20 @@ import jakarta.validation.Validation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.LinkRelation;
-import org.springframework.hateoas.MediaTypes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.*;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -42,24 +48,101 @@ public class EventController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/event")
-    public ResponseEntity event() {
-        return ResponseEntity.ok("Hello");
+    /**
+     * @param assembler JPA가 지원해주는 페이지 링크 만들어주는 리소스 객체
+     */
+    @GetMapping
+    public ResponseEntity getEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler) {
+        Page<Event> page = this.eventRepository.findAll(pageable);
+        var pagedModel = assembler.toModel(page, entity -> {
+            entity.add(linkTo(EventController.class).slash(entity.getId()).withSelfRel());
+            return entity;
+        });
+        pagedModel.add(linkTo(App.class).slash("docs").slash("index.html#resources-events-list").withRel("profile"));
+
+        return ResponseEntity.ok(pagedModel);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity getEvent(@PathVariable Integer id) {
+        Optional<Event> byId = this.eventRepository.findById(id);
+
+        if (byId.isEmpty()) {
+            // throw를 내고 exception hanlder controller한테 위임시키는게 나은듯
+            Map map = new HashMap();
+            map.put("Error-Message", "can not found event id");
+            return ResponseEntity.badRequest()
+                    .body(
+                            EntityModel.of(map, linkTo(methodOn(IndexController.class).index()).withRel("index"))
+                    );
+        }
+
+        Event newEvent = byId.get();
+
+        WebMvcLinkBuilder selfLink = linkTo(EventController.class)
+                .slash(newEvent.getId());
+
+        newEvent.add(linkTo(EventController.class).withRel("query-events"));
+        newEvent.add(selfLink.withSelfRel());
+        newEvent.add(selfLink.withRel("update-event"));
+        newEvent.add(linkTo(App.class).slash("docs").slash("index.html#resources-events-get").withRel("profile"));
+
+        return ResponseEntity.ok().body(newEvent);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity updateEvent(@RequestBody EventDto eventDto, Errors errors, @PathVariable Integer id) {
+        log.info("{}", errors);
+
+        EntityModel<Errors> errorsEntityModel = EntityModel.of(errors,
+                linkTo(methodOn(IndexController.class).index()).withRel("index"));
+
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errorsEntityModel);
+        }
+        // BeanPropertyBindingResult
+        eventValidator.validate(eventDto, errors);
+        log.info("{}", errors);
+
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(EntityModel.of(errorsEntityModel));
+        }
+
+        Optional<Event> optionalEvent = this.eventRepository.findById(id);
+
+        if(optionalEvent.isEmpty()) {
+            // throw를 내고 exception hanlder controller한테 위임시키는게 나은듯
+            Map map = new HashMap();
+            map.put("Error-Message", "can not found event id");
+            return ResponseEntity.badRequest()
+                    .body(
+                            EntityModel.of(map, linkTo(methodOn(IndexController.class).index()).withRel("index"))
+                    );
+        }
+
+        Event event = optionalEvent.get();
+        modelMapper.map(eventDto, event);
+        this.eventRepository.save(event);
+
+        return ResponseEntity.ok().body(event);
     }
 
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         log.info("{}", errors);
 
+        EntityModel<Errors> errorsEntityModel = EntityModel.of(errors,
+                linkTo(methodOn(IndexController.class).index()).withRel("index"));
+
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(errorsEntityModel);
         }
 
         eventValidator.validate(eventDto, errors);
         log.info("{}", errors);
 
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(EntityModel.of(errorsEntityModel));
         }
 
         Event event = this.modelMapper.map(eventDto, Event.class);
