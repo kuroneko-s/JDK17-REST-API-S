@@ -1,5 +1,6 @@
 package com.example.restapi.event.domain;
 
+import com.example.restapi.account.domain.Account;
 import com.example.restapi.event.contorller.EventController;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,6 +43,9 @@ public class Event extends RepresentationModel<Event> {
 
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
+
+    @ManyToOne
+    private Account account;
 
     public void update() {
         if (this.basePrice == 0 && this.maxPrice == 0) {
