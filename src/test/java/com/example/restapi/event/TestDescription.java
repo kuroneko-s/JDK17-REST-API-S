@@ -1,4 +1,4 @@
-package com.example.restapi;
+package com.example.restapi.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

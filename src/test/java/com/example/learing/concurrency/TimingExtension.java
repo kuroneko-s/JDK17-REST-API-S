@@ -1,4 +1,4 @@
-package com.example.restapi;
+package com.example.learing.concurrency;
 
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;

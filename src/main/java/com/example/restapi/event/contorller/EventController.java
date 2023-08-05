@@ -2,23 +2,21 @@ package com.example.restapi.event.contorller;
 
 
 import com.example.restapi.App;
-import com.example.restapi.event.domain.ErrorResource;
 import com.example.restapi.event.domain.Event;
 import com.example.restapi.event.domain.EventDto;
 import com.example.restapi.event.repository.EventRepository;
 import com.example.restapi.event.validator.EventValidator;
 import jakarta.validation.Valid;
-import jakarta.validation.Validation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.*;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 

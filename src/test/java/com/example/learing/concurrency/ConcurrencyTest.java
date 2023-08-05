@@ -1,14 +1,11 @@
-package com.example.concurrency;
+package com.example.learing.concurrency;
 
-import com.example.restapi.TimingExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.concurrency.ConcurrencySupport.*;
 
 /**
  * https://homoefficio.github.io/2020/12/11/Java-Concurrency-Evolution/
@@ -20,19 +17,19 @@ public class ConcurrencyTest {
     @Test
     @DisplayName("Multi Thread 미적용")
     public void shouldBeNotConcurrent() {
-        start();
+        ConcurrencySupport.start();
 
-        for (int user = 1; user <= USERS; user++) {
-            String serviceA = serviceA(user);
-            String serviceB = serviceB(user);
-            for (int i = 1; i <= PERSISTENCE_FORK_FACTOR; i++) {
-                persistence(i, serviceA, serviceB);
+        for (int user = 1; user <= ConcurrencySupport.USERS; user++) {
+            String serviceA = ConcurrencySupport.serviceA(user);
+            String serviceB = ConcurrencySupport.serviceB(user);
+            for (int i = 1; i <= ConcurrencySupport.PERSISTENCE_FORK_FACTOR; i++) {
+                ConcurrencySupport.persistence(i, serviceA, serviceB);
             }
         }
 
-        stop(
+        ConcurrencySupport.stop(
                 1,
-                USERS * (SERVICE_A_LATENCY + SERVICE_B_LATENCY + PERSISTENCE_LATENCY * PERSISTENCE_FORK_FACTOR)
+                ConcurrencySupport.USERS * (ConcurrencySupport.SERVICE_A_LATENCY + ConcurrencySupport.SERVICE_B_LATENCY + ConcurrencySupport.PERSISTENCE_LATENCY * ConcurrencySupport.PERSISTENCE_FORK_FACTOR)
         );
     }
 
@@ -40,7 +37,7 @@ public class ConcurrencyTest {
     @DisplayName("멀티 스레드 적용")
     public void shouldExecuteIterationsConcurrently() throws InterruptedException {
         List<Thread> threads = new ArrayList<>();
-        for (int user = 1; user <= USERS; user++) {
+        for (int user = 1; user <= ConcurrencySupport.USERS; user++) {
             Thread thread = new Thread(new UserFlow(user));
             thread.start();
             threads.add(thread);
@@ -62,10 +59,10 @@ public class ConcurrencyTest {
 
         @Override
         public void run() {
-            String serviceA = serviceA(user);
-            String serviceB = serviceB(user);
-            for (int i = 1; i <= PERSISTENCE_FORK_FACTOR; i++) {
-                persistence(i, serviceA, serviceB);
+            String serviceA = ConcurrencySupport.serviceA(user);
+            String serviceB = ConcurrencySupport.serviceB(user);
+            for (int i = 1; i <= ConcurrencySupport.PERSISTENCE_FORK_FACTOR; i++) {
+                ConcurrencySupport.persistence(i, serviceA, serviceB);
             }
         }
     }

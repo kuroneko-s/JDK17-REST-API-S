@@ -1,9 +1,6 @@
-package com.example.restapi;
+package com.example.learing.functional;
 
-import jdk.dynalink.Operation;
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.Bean;
 
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;

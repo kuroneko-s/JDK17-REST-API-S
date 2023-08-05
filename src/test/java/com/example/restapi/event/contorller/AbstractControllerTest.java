@@ -1,6 +1,6 @@
 package com.example.restapi.event.contorller;
 
-import com.example.restapi.RestDocsConfigure;
+import com.example.restapi.configure.RestDocsConfigure;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Ignore;
 import org.junit.jupiter.api.extension.ExtendWith;

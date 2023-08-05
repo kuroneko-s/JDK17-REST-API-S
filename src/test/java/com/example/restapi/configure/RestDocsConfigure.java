@@ -1,4 +1,4 @@
-package com.example.restapi;
+package com.example.restapi.configure;
 
 import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcConfigurationCustomizer;
 import org.springframework.boot.test.context.TestConfiguration;

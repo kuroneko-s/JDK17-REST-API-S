@@ -1,4 +1,4 @@
-package com.example.concurrency;
+package com.example.learing.concurrency;
 
 import jdk.jfr.Configuration;
 import jdk.jfr.Recording;
