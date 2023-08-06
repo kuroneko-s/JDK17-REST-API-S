@@ -33,7 +33,7 @@ asciidoctor { // ascii 작업 구성.
 
 bootJar {
     dependsOn asciidoctor
-    from ("build/docs/asciidoc") {
+    from("build/docs/asciidoc") {
         into "src/main/resources/static/docs"
     }
 }
@@ -57,8 +57,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.2'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     // https://mvnrepository.com/artifact/org.springframework.security.oauth.boot/spring-security-oauth2-autoconfigure
     implementation group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure', version: '2.6.8'
+
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-resource-server
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-resource-server', version: '6.1.2'
+
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.projectlombok:lombok'
