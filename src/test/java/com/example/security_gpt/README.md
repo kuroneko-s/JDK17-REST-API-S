@@ -1,3 +1,11 @@
+# 서문
+[Sample Code Git Repository](https://github.com/spring-projects/spring-security-samples/tree/main)      
+Chat-GPT를 이용해서 번역파일 만드는 중.      
+@Author - https://github.com/kuroneko-s     
+시큐리티 버전 6.x 작업 후 MVC -> Spring Boot -> REST API -> REST DOCS -> HATEOAS 순으로 작업 예정.
+
+# 본문
+
 ## Spring Security는 인증
 
 권한 부여 및 일반적인 공격으로부터 보호하는 프레임워크입니다. 명령형 및 반응형 애플리케이션 모두를 보호하는 기능을 제공하며, Spring 기반 응용 프로그램의 보호를 위한 표준적인 프레임워크로 자리 잡고 있습니다.
@@ -659,3 +667,44 @@ dependencies {
 ```
 
 Spring Boot는 의존성 버전을 관리하기 위해 Maven BOM을 제공하므로 버전을 따로 명시할 필요가 없습니다. 그러나 Spring Security 버전을 덮어쓰고 싶다면 다음과 같이 Gradle 속성을 제공할 수 있습니다:
+<p class="codeblock-label">build.gradle</p>
+
+```groovy
+ext['spring-security.version']='6.1.2'
+```
+
+Spring Security에서는 주요 릴리스에서만 호환성을 깨는 변경 사항이 발생하므로, Spring Boot와 함께 새로운 버전의 Spring Security를 안전하게 사용할 수 있습니다. 그러나 때때로, Spring Framework의 버전도 업데이트해야 할 수도 있습니다. 이렇게 하려면 Gradle 속성을 추가하십시오:
+<p class="codeblock-label">build.gradle</p>
+
+```groovy
+ext['spring.version']='6.0.11'
+```
+
+추가 기능(예: LDAP, OAuth 2 등)을 사용하려면 적절한 [프로젝트 모듈과 의존성](https://docs.spring.io/spring-security/reference/modules.html#modules)도 포함해야 합니다.
+
+### Spring Boot 없이 Gradle 사용하기
+
+Spring Boot 없이 Spring Security를 사용할 때, 권장되는 방법은 Spring Security의 BOM을 사용하여 프로젝트 전체에서 일관된 버전의 Spring Security가 사용되도록 하는 것입니다. [Dependency Management](https://github.com/spring-gradle-plugins/dependency-management-plugin) 플러그인을 사용하여 이렇게 할 수 있습니다:
+<p class="codeblock-label">build.gradle</p>
+
+```groovy
+plugins {
+	id "io.spring.dependency-management" version "1.0.6.RELEASE"
+}
+
+dependencyManagement {
+	imports {
+		mavenBom 'org.springframework.security:spring-security-bom:6.1.2'
+	}
+}
+```
+
+최소한의 Spring Security Maven 의존성 세트는 일반적으로 다음과 같이 구성됩니다:
+<p class="codeblock-label">build.gradle</p>
+
+```groovy
+dependencies {
+	compile "org.springframework.security:spring-security-web"
+	compile "org.springframework.security:spring-security-config"
+}
+```
