@@ -1,14 +1,11 @@
 package com.example.restapi.event.domain;
 
 import com.example.restapi.account.domain.Account;
-import com.example.restapi.event.contorller.EventController;
-import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Setter
 @Getter

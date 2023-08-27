@@ -1,8 +1,8 @@
 package com.example.restapi.account.domain;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
