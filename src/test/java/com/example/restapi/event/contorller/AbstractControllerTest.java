@@ -2,7 +2,7 @@ package com.example.restapi.event.contorller;
 
 import com.example.restapi.configure.RestDocsConfigure;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @Import(RestDocsConfigure.class)
 @ActiveProfiles("test")
-@Ignore
+@Disabled
 public abstract class AbstractControllerTest {
     @Autowired
     protected MockMvc mockMvc;
