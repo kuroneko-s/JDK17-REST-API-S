@@ -1,16 +1,16 @@
 package com.example.restapi.automatic.service;
 
 import com.example.restapi.automatic.model.templates.GetTemplateType;
-import com.example.restapi.automatic.model.templates.DefaultTemplateForController;
-import com.example.restapi.automatic.model.templates.GetTemplateForController;
+import com.example.restapi.automatic.model.templates.TemplateType;
+import com.example.restapi.automatic.model.templates.Templates;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.restapi.util.ConstantValues.*;
 
 public class ControllerTemplatesCreatorServiceImpl implements TemplatesCreatorService {
-    private final GetTemplateForController getTemplate = GetTemplateForController.INSTANCE;
-    private final DefaultTemplateForController defaultTemplate = DefaultTemplateForController.INSTANCE;
+    private Templates templates = Templates.INSTANCE;
 
     @Override
     public String beforeTemplate(String... classNames) {
@@ -39,7 +39,8 @@ public class ControllerTemplatesCreatorServiceImpl implements TemplatesCreatorSe
             parameterClassName = params + SUBFIX_DETAIL_PARAMS;
         }
 
-        return getTemplate.bind(packageName, methodName, methodName, parameterClassName, serviceName, methodName);
+        String template = templates.getTemplate(TemplateType.CONTROLLER_GET);
+        return templates.bind(template, packageName, methodName, methodName, parameterClassName, serviceName, methodName);
     }
 
     /**
@@ -55,7 +56,8 @@ public class ControllerTemplatesCreatorServiceImpl implements TemplatesCreatorSe
         String parameterClassName = "Reg" + params + "Params";
         String serviceName = params.substring(0, 1).toLowerCase() + params.substring(1) + "Service";
 
-        return defaultTemplate.bind(packageName, methodName, methodName, parameterClassName, serviceName, methodName);
+        String template = templates.getTemplate(TemplateType.CONTROLLER_REG);
+        return templates.bind(template, packageName, methodName, methodName, parameterClassName, serviceName, methodName);
     }
 
     /**
@@ -71,7 +73,8 @@ public class ControllerTemplatesCreatorServiceImpl implements TemplatesCreatorSe
         String parameterClassName = "Mod" + params + "Params";
         String serviceName = params.substring(0, 1).toLowerCase() + params.substring(1) + "Service";
 
-        return defaultTemplate.bind(packageName, methodName, methodName, parameterClassName, serviceName, methodName);
+        String template = templates.getTemplate(TemplateType.CONTROLLER_MOD);
+        return templates.bind(template, packageName, methodName, methodName, parameterClassName, serviceName, methodName);
     }
 
     /**
@@ -87,7 +90,8 @@ public class ControllerTemplatesCreatorServiceImpl implements TemplatesCreatorSe
         String parameterClassName = "Del" + params + "Params";
         String serviceName = params.substring(0, 1).toLowerCase() + params.substring(1) + "Service";
 
-        return defaultTemplate.bind(packageName, methodName, methodName, parameterClassName, serviceName, methodName);
+        String template = templates.getTemplate(TemplateType.CONTROLLER_DEL);
+        return templates.bind(template, packageName, methodName, methodName, parameterClassName, serviceName, methodName);
     }
 
     /**
@@ -105,7 +109,6 @@ public class ControllerTemplatesCreatorServiceImpl implements TemplatesCreatorSe
 
         stringBuilder.append("@Controller\n");
         stringBuilder.append("class ").append(className).append("{ \n");
-
         stringBuilder.append("@Autowired\n");
         stringBuilder.append("private ").append(serviceClassName).append(" ").append(serviceName).append(";\n");
         stringBuilder.append("\n");

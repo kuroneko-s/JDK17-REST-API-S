@@ -1,7 +1,7 @@
 package com.example.restapi.automatic.service;
 
-import com.example.restapi.automatic.model.templates.GetTemplateType;
 import com.example.restapi.automatic.model.RequestParams;
+import com.example.restapi.automatic.model.templates.GetTemplateType;
 import com.example.restapi.file.model.FileSaveParams;
 import com.example.restapi.file.service.FileService;
 import org.springframework.stereotype.Service;

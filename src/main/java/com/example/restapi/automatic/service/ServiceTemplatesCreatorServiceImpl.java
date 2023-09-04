@@ -1,9 +1,8 @@
 package com.example.restapi.automatic.service;
 
-import com.example.restapi.automatic.model.templates.DefaultTemplateForService;
-import com.example.restapi.automatic.model.templates.GetDetailTemplateForService;
-import com.example.restapi.automatic.model.templates.GetListTemplateForService;
 import com.example.restapi.automatic.model.templates.GetTemplateType;
+import com.example.restapi.automatic.model.templates.TemplateType;
+import com.example.restapi.automatic.model.templates.Templates;
 import com.example.restapi.util.StringType;
 import com.example.restapi.util.StringUtil;
 
@@ -12,9 +11,7 @@ import java.util.List;
 import static com.example.restapi.util.ConstantValues.*;
 
 public class ServiceTemplatesCreatorServiceImpl implements TemplatesCreatorService {
-    private GetListTemplateForService getListTemplate = GetListTemplateForService.INSTANCE;
-    private GetDetailTemplateForService getDetailTemplate = GetDetailTemplateForService.INSTANCE;
-    private DefaultTemplateForService defaultTemplate = DefaultTemplateForService.INSTANCE;
+    private Templates templates = Templates.INSTANCE;
 
     @Override
     public String beforeTemplate(String... classNames) {
@@ -42,13 +39,17 @@ public class ServiceTemplatesCreatorServiceImpl implements TemplatesCreatorServi
             parameterClassName = params + SUBFIX_DETAIL_PARAMS;
             returnValue = returnValue + SUBFIX_DETAIL + "(params)";
 
-            return getDetailTemplate.bind(returnType, methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, returnValue);
+            String template = templates.getTemplate(TemplateType.SERVICE_GET_DETAIL);
+
+            return templates.bind(template, returnType, methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, returnValue);
         } else { // LIST
             methodName = "get" + params + SUBFIX_LIST;
             parameterClassName = "Get" + params + SUBFIX_LIST_PARAMS;
             returnValue = returnValue + SUBFIX_LIST + "(params)";
 
-            return getListTemplate.bind(returnType, methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, returnValue);
+            String template = templates.getTemplate(TemplateType.SERVICE_GET_LIST);
+
+            return templates.bind(template, returnType, methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, returnValue);
         }
     }
 
@@ -65,7 +66,8 @@ public class ServiceTemplatesCreatorServiceImpl implements TemplatesCreatorServi
         String builderClassName = "Insert" + params + "Params";
         String builderVariableName = builderClassName.substring(0, 1).toLowerCase() + builderClassName.substring(1);
 
-        return defaultTemplate.bind(methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, calledMethod);
+        String template = templates.getTemplate(TemplateType.SERVICE_REG);
+        return templates.bind(template, methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, calledMethod);
     }
 
     /**
@@ -81,7 +83,8 @@ public class ServiceTemplatesCreatorServiceImpl implements TemplatesCreatorServi
         String builderClassName = "Update" + params + "Params";
         String builderVariableName = builderClassName.substring(0, 1).toLowerCase() + builderClassName.substring(1);
 
-        return defaultTemplate.bind(methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, calledMethod);
+        String template = templates.getTemplate(TemplateType.SERVICE_MOD);
+        return templates.bind(template, methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, calledMethod);
     }
 
     /**
@@ -97,7 +100,8 @@ public class ServiceTemplatesCreatorServiceImpl implements TemplatesCreatorServi
         String builderClassName = "Delete" + params + "Params";
         String builderVariableName = builderClassName.substring(0, 1).toLowerCase() + builderClassName.substring(1);
 
-        return defaultTemplate.bind(methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, calledMethod);
+        String template = templates.getTemplate(TemplateType.SERVICE_DEL);
+        return templates.bind(template, methodName, parameterClassName, builderClassName, builderVariableName, builderClassName, calledMethod);
     }
 
     /**
