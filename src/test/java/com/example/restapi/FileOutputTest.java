@@ -1,7 +1,7 @@
 package com.example.restapi;
 
-import com.example.restapi.automatic.model.GetTemplateType;
-import com.example.restapi.automatic.service.TemplatesCreatorServiceImpl;
+import com.example.restapi.automatic.model.templates.GetTemplateType;
+import com.example.restapi.automatic.service.ControllerTemplatesCreatorServiceImpl;
 import com.example.restapi.file.model.FileSaveParams;
 import com.example.restapi.file.service.FileService;
 import com.example.restapi.file.service.FileServiceImpl;
@@ -17,7 +17,6 @@ import javax.validation.ConstraintViolationException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
@@ -28,8 +27,8 @@ public class FileOutputTest {
     @Test
     @DisplayName("파일 저장 테스트")
     void fileOutputTest() {
-        TemplatesCreatorServiceImpl creatorService = new TemplatesCreatorServiceImpl();
-        String booksTemplate = creatorService.getTemplateForController("Books", GetTemplateType.DEFAULT);
+        ControllerTemplatesCreatorServiceImpl creatorService = new ControllerTemplatesCreatorServiceImpl();
+        String booksTemplate = creatorService.getTemplate("Books", GetTemplateType.DETAIL);
 
         FileService fileService = new FileServiceImpl();
         FileSaveParams fileSaveParams = FileSaveParams.builder()

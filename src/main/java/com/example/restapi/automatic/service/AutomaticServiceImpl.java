@@ -1,6 +1,6 @@
 package com.example.restapi.automatic.service;
 
-import com.example.restapi.automatic.model.GetTemplateType;
+import com.example.restapi.automatic.model.templates.GetTemplateType;
 import com.example.restapi.automatic.model.RequestParams;
 import com.example.restapi.file.model.FileSaveParams;
 import com.example.restapi.file.service.FileService;
@@ -26,19 +26,18 @@ public class AutomaticServiceImpl implements AutomaticService {
 
             // 메서드 템플릿 생성
             List<String> templateList = params.getValueOfKey(key).stream().map(value -> switch (value) {
-                        case "C" -> templatesService.regTemplateForController(key);
-                        case "R" -> templatesService.getTemplateForController(key, GetTemplateType.DEFAULT);
-                        case "RL" -> templatesService.getTemplateForController(key, GetTemplateType.LIST);
-                        case "RK" -> templatesService.getTemplateForController(key, GetTemplateType.DETAIL);
-                        case "U" -> templatesService.modTemplateForController(key);
-                        case "D" -> templatesService.delTemplateForController(key);
+                        case "C" -> templatesService.regTemplate(key);
+                        case "RL" -> templatesService.getTemplate(key, GetTemplateType.LIST);
+                        case "RK" -> templatesService.getTemplate(key, GetTemplateType.DETAIL);
+                        case "U" -> templatesService.modTemplate(key);
+                        case "D" -> templatesService.delTemplate(key);
                         default -> null;
                     })
                     .filter(Objects::nonNull)
                     .toList();
 
             // 파일 템플릿 생성
-            String fileTemplate = templatesService.fileTemplateForController(templateList, key);
+            String fileTemplate = templatesService.fileTemplate(templateList, key);
 
             // 파일 저장
             FileSaveParams fileSaveParams = FileSaveParams.builder()

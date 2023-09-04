@@ -1,5 +1,7 @@
 package com.example.restapi.util;
 
+import static com.example.restapi.util.ConstantValues.SUBFIX_LIST;
+
 /**
  * 문자열 가공 유틸
  * @author donghyuk

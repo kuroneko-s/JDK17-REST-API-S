@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class AutomaticController {
-
     private final AutomaticService automaticService;
 
     public AutomaticController(AutomaticService automaticService) {
